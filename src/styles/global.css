@@ -1,189 +1,212 @@
 :root {
-  color-scheme: light;
-  --bg: #f7f1e8;
-  --bg-2: #f2eadf;
-  --text: #4f4439;
-  --muted: #6e6356;
-  --line: rgba(79, 68, 57, 0.15);
-  --line-soft: rgba(79, 68, 57, 0.08);
+  --background: #000000;
+  --foreground: #ffffff;
+  --muted: #a1a1aa;
 }
 
-*,
-*::before,
-*::after {
+[data-theme='parchment'] {
+  --background: #F4EFE7;
+  --foreground: #2A2621;
+  --muted: #7E7569;
+}
+
+[data-theme='graphite'] {
+  --background: #1C1C1C;
+  --foreground: #F5F5F5;
+  --muted: #8E8E8E;
+}
+
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
-html,
-body {
-  width: 100%;
-  height: 100%;
-}
-
-html {
-  overflow: hidden;
-}
-
-body {
+html, body {
   margin: 0;
-  overflow: hidden;
-  color: var(--text);
-  background:
-    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
-  font-family: 'Manrope', system-ui, sans-serif;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background:
-    repeating-linear-gradient(
-      135deg,
-      rgba(98, 84, 70, 0.03) 0,
-      rgba(98, 84, 70, 0.03) 1px,
-      transparent 1px,
-      transparent 12px
-    );
-  opacity: 0.7;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 1rem;
-  pointer-events: none;
-  border: 1px solid rgba(79, 68, 57, 0.08);
-  border-radius: 1.25rem;
-}
-
-a {
-  color: inherit;
+  padding: 0;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.8s cubic-bezier(0.22, 1, 0.36, 1), color 0.8s ease;
 }
 
 ::selection {
-  background: rgba(110, 99, 86, 0.18);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .page {
-  height: 100svh;
-  max-width: 72rem;
-  margin: 0 auto;
-  padding: clamp(1.25rem, 3vw, 2.75rem);
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  max-width: 72rem; /* max-w-6xl */
+  margin: 0 auto;
+  padding: 3rem 1.5rem; /* py-12 px-6 */
 }
 
 .hero {
-  max-width: 48rem;
-  margin-top: clamp(0.5rem, 8vh, 5rem);
+  margin-top: 0;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    margin-top: 10rem; /* md:mt-40 */
+  }
 }
 
 .wordmark {
   display: block;
-  width: min(100%, 42rem);
+  width: 280px;
   height: auto;
-  margin: 0 0 1.2rem;
+  margin-bottom: 1.5rem; /* mb-6 */
+}
+
+@media (min-width: 768px) {
+  .wordmark {
+    width: 400px; /* md:w-[400px] */
+  }
 }
 
 .wordmark text {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  fill: transparent;
+  stroke: var(--foreground);
+  stroke-width: 1.5;
   font-family: 'Oooh Baby', cursive;
   font-size: 132px;
-  letter-spacing: -0.03em;
-  paint-order: stroke fill;
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: draw 2.5s ease-in-out forwards, fillText 0.8s ease-in-out 2s forwards;
+  transition: stroke 0.8s ease, fill 0.8s ease;
 }
 
 .lede {
-  margin: 0;
-  max-width: 35rem;
   color: var(--muted);
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(1.1rem, 1.85vw, 1.42rem);
-  line-height: 1.55;
+  font-size: 1rem;
+  line-height: 1.625; /* leading-relaxed */
+  max-width: 32rem; /* max-w-lg */
+  margin-top: 1rem;
+  margin-bottom: 0;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeUp 0.8s ease-out forwards;
 }
 
-.lede + .lede {
-  margin-top: 1rem;
+.lede:first-of-type {
+  margin-top: 0;
+  animation-delay: 1.2s;
+}
+
+.lede:last-of-type {
+  animation-delay: 1.5s;
 }
 
 .footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 2rem;
-  padding-top: 1.35rem;
-  border-top: 1px solid var(--line);
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeUp 0.8s ease-out forwards;
+  animation-delay: 1.8s;
+  padding-bottom: 2rem;
 }
 
 .section-label {
-  margin: 0 0 1.35rem;
   color: var(--muted);
-  font-size: 0.95rem;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
+  font-size: 1rem;
+  font-style: italic; /* italic */
+  margin-bottom: 0.75rem; /* mb-3 */
+  margin-top: 0;
 }
 
 .link-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  gap: 0.95rem;
+}
+
+.link-list li {
+  margin-top: 0.25rem; /* space-y-1 */
 }
 
 .link-list a {
-  color: var(--text);
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 2.2rem;
-  line-height: 1;
+  color: var(--muted);
   text-decoration: none;
-  transition: opacity 180ms ease;
+  transition: color 0.3s ease;
 }
 
-.link-list a:hover,
-.meta-links a:hover {
-  opacity: 0.72;
+.link-list a:hover {
+  color: var(--foreground);
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  transition: color 0.3s ease;
+}
+
+.theme-toggle:hover {
+  color: var(--foreground);
+}
+
+.theme-label {
+  font-style: italic;
+}
+
+#theme-name {
+  display: inline-block;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .meta-links {
   display: flex;
-  justify-content: flex-end;
-  gap: 1.5rem;
+  gap: 1.5rem; /* gap-6 */
   color: var(--muted);
-  font-size: 0.95rem;
+  justify-content: flex-end; /* justify-end */
 }
 
 .meta-links a {
+  color: var(--muted);
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-@media (max-width: 760px) {
-  .page {
-    padding: 1rem;
-  }
+.meta-links a:hover {
+  color: var(--foreground);
+}
 
-  .footer {
-    flex-direction: column;
-    align-items: flex-start;
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
   }
+}
 
-  .meta-links {
-    justify-content: flex-start;
+@keyframes fillText {
+  to {
+    fill: var(--foreground);
+    stroke-width: 0;
   }
+}
 
-  .wordmark text {
-    font-size: 94px;
-  }
-
-  .link-list a {
-    font-size: 1.8rem;
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -195,4 +218,18 @@ a {
     transition: none !important;
     scroll-behavior: auto !important;
   }
+  
+  .wordmark text {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    fill: var(--foreground);
+    stroke-width: 0;
+  }
+  
+  .lede, .footer {
+    opacity: 1;
+    transform: none;
+  }
 }
+
+/* --- FUN VIBES --- */

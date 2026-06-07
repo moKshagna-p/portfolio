@@ -39,11 +39,11 @@ const writings = [
       content="Mokshagna Reddy — a single-screen portfolio built with Bun and Astro."
     />
     <meta name="author" content="Mokshagna Reddy" />
-    <meta name="theme-color" content="#f4efe7" />
+    <meta name="theme-color" content="#000000" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=Oooh+Baby&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Oooh+Baby&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -86,13 +86,46 @@ const writings = [
           </ul>
         </nav>
 
-        <div class="meta-links" aria-label="External contact links">
-          <a href={github} target="_blank" rel="me noopener noreferrer">
-            github
-          </a>
-          <a href={email}>email</a>
+        <div class="footer-bottom">
+          <button id="theme-toggle" class="theme-toggle">
+            <span class="theme-label">theme:</span> <span id="theme-name">midnight</span>
+          </button>
+          <div class="meta-links" aria-label="External contact links">
+            <a href={github} target="_blank" rel="me noopener noreferrer">
+              github
+            </a>
+            <a href={email}>email</a>
+          </div>
         </div>
       </footer>
     </main>
+
+    <script>
+      // Theme Cycler
+      const themes = ['midnight', 'parchment', 'graphite'];
+      let currentThemeIndex = 0;
+      
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeName = document.getElementById('theme-name');
+      
+      if (themeToggle && themeName) {
+        themeToggle.addEventListener('click', () => {
+          currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+          const newTheme = themes[currentThemeIndex];
+          
+          document.documentElement.dataset.theme = newTheme;
+          
+          // Animate the text change
+          themeName.style.opacity = '0';
+          themeName.style.transform = 'translateY(4px)';
+          
+          setTimeout(() => {
+            themeName.innerText = newTheme;
+            themeName.style.opacity = '1';
+            themeName.style.transform = 'translateY(0)';
+          }, 200);
+        });
+      }
+    </script>
   </body>
 </html>
