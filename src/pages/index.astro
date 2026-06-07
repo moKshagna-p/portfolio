@@ -1,0 +1,98 @@
+---
+import '../styles/global.css';
+
+const github = 'https://github.com/moKshagna-p';
+const email = 'mailto:mokshagnareddy45@gmail.com';
+
+const writings = [
+  {
+    title: 'shipping small, sharp interfaces',
+    href: 'https://github.com/moKshagna-p',
+  },
+  {
+    title: 'why simple systems last longer',
+    href: 'https://github.com/moKshagna-p',
+  },
+  {
+    title: 'astro and bun make a clean stack',
+    href: 'https://github.com/moKshagna-p',
+  },
+  {
+    title: 'designing for speed without noise',
+    href: 'https://github.com/moKshagna-p',
+  },
+  {
+    title: 'products should feel invisible',
+    href: 'https://github.com/moKshagna-p',
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mokshagna Reddy — Portfolio</title>
+    <meta
+      name="description"
+      content="Mokshagna Reddy — a single-screen portfolio built with Bun and Astro."
+    />
+    <meta name="author" content="Mokshagna Reddy" />
+    <meta name="theme-color" content="#f4efe7" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=Oooh+Baby&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero" aria-labelledby="name">
+        <svg
+          class="wordmark"
+          id="name"
+          viewBox="0 0 1040 210"
+          role="img"
+          aria-label="Mokshagna Reddy"
+        >
+          <text x="6" y="150">Mokshagna Reddy</text>
+        </svg>
+
+        <p class="lede">
+          i’m a software engineer focused on thoughtful interfaces, clean product
+          systems, and frontend work that feels effortless. i like building things that
+          stay simple even when the problem is not.
+        </p>
+        <p class="lede">
+          before focusing on product interfaces, i spent time shipping across web and
+          mobile. i care about making complex systems accessible, fast, and quiet in
+          the best possible way.
+        </p>
+      </header>
+
+      <footer class="footer">
+        <nav aria-labelledby="writings-title">
+          <p class="section-label" id="writings-title">favorite writings:</p>
+          <ul class="link-list">
+            {writings.map((writing) => (
+              <li>
+                <a href={writing.href} target="_blank" rel="noopener noreferrer">
+                  {writing.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div class="meta-links" aria-label="External contact links">
+          <a href={github} target="_blank" rel="me noopener noreferrer">
+            github
+          </a>
+          <a href={email}>email</a>
+        </div>
+      </footer>
+    </main>
+  </body>
+</html>
