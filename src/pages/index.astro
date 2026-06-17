@@ -1,31 +1,13 @@
 ---
 import "../styles/global.css";
+import RetroGrid from "@/components/magicui/retro-grid";
+import BlurFade from "@/components/magicui/blur-fade";
+import WordPullUp from "@/components/magicui/word-pull-up";
 
 const github = "https://github.com/moKshagna-p";
 const email = "mailto:mokshagnareddy45@gmail.com";
 
-const writings = [
-  {
-    title: "shipping small, sharp interfaces",
-    href: "https://github.com/moKshagna-p",
-  },
-  {
-    title: "why simple systems last longer",
-    href: "https://github.com/moKshagna-p",
-  },
-  {
-    title: "astro and bun make a clean stack",
-    href: "https://github.com/moKshagna-p",
-  },
-  {
-    title: "designing for speed without noise",
-    href: "https://github.com/moKshagna-p",
-  },
-  {
-    title: "products should feel invisible",
-    href: "https://github.com/moKshagna-p",
-  },
-];
+const BLUR_FADE_DELAY = 0.04;
 ---
 
 <!doctype html>
@@ -47,70 +29,50 @@ const writings = [
       rel="stylesheet"
     />
   </head>
-  <body>
-    <main class="page">
-      <header class="hero" aria-labelledby="name">
-        <svg
-          class="wordmark"
-          id="name"
-          viewBox="0 0 1040 210"
-          role="img"
-          aria-label="Mokshagna Reddy"
-        >
-          <text x="6" y="150">Mokshagna Reddy</text>
-        </svg>
+  <body class="relative flex min-h-screen w-full flex-col justify-between overflow-hidden bg-background font-sans text-foreground">
+    <RetroGrid client:load />
 
-        <p class="lede">
-          i’m a software engineer focused on thoughtful interfaces, clean
-          product systems, and frontend work that feels effortless. i like
-          building things that stay simple even when the problem is not.
-        </p>
-        <p class="lede">
-          before focusing on product interfaces, i spent time shipping across
-          web and mobile. i care about making complex systems accessible, fast,
-          and quiet in the best possible way.
-        </p>
+    <main class="page relative z-10 w-full max-w-6xl mx-auto px-6 py-12 md:py-40 flex flex-col justify-between min-h-screen">
+      <header class="hero max-w-2xl" aria-labelledby="name">
+        <BlurFade delay={BLUR_FADE_DELAY} client:load>
+          <WordPullUp
+            words="Mokshagna Reddy"
+            className="text-left font-['Oooh_Baby'] text-6xl md:text-8xl tracking-tight mb-6"
+            client:load
+          />
+        </BlurFade>
+
+        <BlurFade delay={BLUR_FADE_DELAY * 2} client:load>
+          <p class="lede text-muted-foreground text-lg mb-6 leading-relaxed">
+            i’m a software engineer focused on thoughtful interfaces, clean
+            product systems, and frontend work that feels effortless. i like
+            building things that stay simple even when the problem is not.
+          </p>
+        </BlurFade>
+        
+        <BlurFade delay={BLUR_FADE_DELAY * 3} client:load>
+          <p class="lede text-muted-foreground text-lg leading-relaxed">
+            before focusing on product interfaces, i spent time shipping across
+            web and mobile. i care about making complex systems accessible, fast,
+            and quiet in the best possible way.
+          </p>
+        </BlurFade>
       </header>
 
-      <!-- <footer class="footer">
-        <nav aria-labelledby="writings-title">
-          <p class="section-label" id="writings-title">favorite writings:</p>
-          <ul class="link-list">
-            {writings.map((writing) => (
-              <li>
-                <a href={writing.href} target="_blank" rel="noopener noreferrer">
-                  {writing.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div class="footer-bottom">
-          <button id="theme-toggle" class="theme-toggle">
-            <span class="theme-label">theme:</span> <span id="theme-name">midnight</span>
+      <BlurFade delay={BLUR_FADE_DELAY * 4} client:load className="mt-auto pt-12">
+        <div class="footer-bottom flex justify-between items-center w-full">
+          <button id="theme-toggle" class="theme-toggle flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+            <span class="theme-label italic">theme:</span>
+            <span id="theme-name" class="font-medium">midnight</span>
           </button>
-          <div class="meta-links" aria-label="External contact links">
-            <a href={github} target="_blank" rel="me noopener noreferrer">
+          <div class="meta-links flex gap-6 text-muted-foreground" aria-label="External contact links">
+            <a href={github} target="_blank" rel="me noopener noreferrer" class="hover:text-foreground transition-colors">
               github
             </a>
-            <a href={email}>email</a>
+            <a href={email} class="hover:text-foreground transition-colors">email</a>
           </div>
         </div>
-      </footer> -->
-
-      <div class="footer-bottom">
-        <button id="theme-toggle" class="theme-toggle">
-          <span class="theme-lable" style="padding-left: 11px;">theme :</span>
-          <span id="theme-name"> middnight</span>
-        </button>
-        <div class="meta-links" aria-label="External contact links">
-          <a href={github} target="_blank" rel="me noopener noreferrer">
-            github
-          </a>
-          <a href={email}>email</a>
-        </div>
-      </div>
+      </BlurFade>
     </main>
 
     <script>
@@ -128,7 +90,6 @@ const writings = [
 
           document.documentElement.dataset.theme = newTheme;
 
-          // Animate the text change
           themeName.style.opacity = "0";
           themeName.style.transform = "translateY(4px)";
 

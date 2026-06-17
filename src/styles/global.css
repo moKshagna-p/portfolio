@@ -1,3 +1,17 @@
+@import "tailwindcss";
+
+@theme {
+  --animate-grid: grid 15s linear infinite;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted);
+}
+
+@keyframes grid {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
+}
+
 :root {
   --background: #000000;
   --foreground: #ffffff;
@@ -56,59 +70,9 @@ html, body {
   }
 }
 
-.wordmark {
-  display: block;
-  width: 280px;
-  height: auto;
-  margin-bottom: 1.5rem; /* mb-6 */
-}
 
-@media (min-width: 768px) {
-  .wordmark {
-    width: 400px; /* md:w-[400px] */
-  }
-}
 
-.wordmark text {
-  fill: transparent;
-  stroke: var(--foreground);
-  stroke-width: 1.5;
-  font-family: 'Oooh Baby', cursive;
-  font-size: 132px;
-  stroke-dasharray: 2000;
-  stroke-dashoffset: 2000;
-  animation: draw 2.5s ease-in-out forwards, fillText 0.8s ease-in-out 2s forwards;
-  transition: stroke 0.8s ease, fill 0.8s ease;
-}
 
-.lede {
-  color: var(--muted);
-  font-size: 1rem;
-  line-height: 1.625; /* leading-relaxed */
-  max-width: 32rem; /* max-w-lg */
-  margin-top: 1rem;
-  margin-bottom: 0;
-  opacity: 0;
-  transform: translateY(10px);
-  animation: fadeUp 0.8s ease-out forwards;
-}
-
-.lede:first-of-type {
-  margin-top: 0;
-  animation-delay: 1.2s;
-}
-
-.lede:last-of-type {
-  animation-delay: 1.5s;
-}
-
-.footer {
-  opacity: 0;
-  transform: translateY(10px);
-  animation: fadeUp 0.8s ease-out forwards;
-  animation-delay: 1.8s;
-  padding-bottom: 2rem;
-}
 
 .section-label {
   color: var(--muted);
@@ -190,25 +154,7 @@ html, body {
   color: var(--foreground);
 }
 
-@keyframes draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
 
-@keyframes fillText {
-  to {
-    fill: var(--foreground);
-    stroke-width: 0;
-  }
-}
-
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -217,18 +163,6 @@ html, body {
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;
-  }
-  
-  .wordmark text {
-    stroke-dasharray: none;
-    stroke-dashoffset: 0;
-    fill: var(--foreground);
-    stroke-width: 0;
-  }
-  
-  .lede, .footer {
-    opacity: 1;
-    transform: none;
   }
 }
 
