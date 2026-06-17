@@ -39,11 +39,16 @@ try {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
+    <style>
+      .font-mono-stack {
+        font-family: "Berkeley Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      }
+    </style>
   </head>
-  <body class="relative flex min-h-screen w-full flex-col overflow-hidden bg-background text-foreground font-['JetBrains_Mono'] antialiased selection:bg-white/20">
+  <body class="relative flex min-h-screen w-full flex-col overflow-hidden bg-background text-foreground font-mono-stack antialiased selection:bg-white/20">
 
     <main class="relative z-10 w-full max-w-4xl mx-auto px-6 py-20 md:py-32 flex flex-col min-h-screen">
       <header class="mb-24">
