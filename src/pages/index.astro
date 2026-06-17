@@ -1,29 +1,29 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
 
-const github = 'https://github.com/moKshagna-p';
-const email = 'mailto:mokshagnareddy45@gmail.com';
+const github = "https://github.com/moKshagna-p";
+const email = "mailto:mokshagnareddy45@gmail.com";
 
 const writings = [
   {
-    title: 'shipping small, sharp interfaces',
-    href: 'https://github.com/moKshagna-p',
+    title: "shipping small, sharp interfaces",
+    href: "https://github.com/moKshagna-p",
   },
   {
-    title: 'why simple systems last longer',
-    href: 'https://github.com/moKshagna-p',
+    title: "why simple systems last longer",
+    href: "https://github.com/moKshagna-p",
   },
   {
-    title: 'astro and bun make a clean stack',
-    href: 'https://github.com/moKshagna-p',
+    title: "astro and bun make a clean stack",
+    href: "https://github.com/moKshagna-p",
   },
   {
-    title: 'designing for speed without noise',
-    href: 'https://github.com/moKshagna-p',
+    title: "designing for speed without noise",
+    href: "https://github.com/moKshagna-p",
   },
   {
-    title: 'products should feel invisible',
-    href: 'https://github.com/moKshagna-p',
+    title: "products should feel invisible",
+    href: "https://github.com/moKshagna-p",
   },
 ];
 ---
@@ -61,18 +61,18 @@ const writings = [
         </svg>
 
         <p class="lede">
-          i’m a software engineer focused on thoughtful interfaces, clean product
-          systems, and frontend work that feels effortless. i like building things that
-          stay simple even when the problem is not.
+          i’m a software engineer focused on thoughtful interfaces, clean
+          product systems, and frontend work that feels effortless. i like
+          building things that stay simple even when the problem is not.
         </p>
         <p class="lede">
-          before focusing on product interfaces, i spent time shipping across web and
-          mobile. i care about making complex systems accessible, fast, and quiet in
-          the best possible way.
+          before focusing on product interfaces, i spent time shipping across
+          web and mobile. i care about making complex systems accessible, fast,
+          and quiet in the best possible way.
         </p>
       </header>
 
-      <footer class="footer">
+      <!-- <footer class="footer">
         <nav aria-labelledby="writings-title">
           <p class="section-label" id="writings-title">favorite writings:</p>
           <ul class="link-list">
@@ -97,32 +97,45 @@ const writings = [
             <a href={email}>email</a>
           </div>
         </div>
-      </footer>
+      </footer> -->
+
+      <div class="footer-bottom">
+        <button id="theme-toggle" class="theme-toggle">
+          <span class="theme-lable" style="padding-left: 11px;">theme :</span>
+          <span id="theme-name"> middnight</span>
+        </button>
+        <div class="meta-links" aria-label="External contact links">
+          <a href={github} target="_blank" rel="me noopener noreferrer">
+            github
+          </a>
+          <a href={email}>email</a>
+        </div>
+      </div>
     </main>
 
     <script>
       // Theme Cycler
-      const themes = ['midnight', 'parchment', 'graphite'];
+      const themes = ["midnight", "parchment", "graphite"];
       let currentThemeIndex = 0;
-      
-      const themeToggle = document.getElementById('theme-toggle');
-      const themeName = document.getElementById('theme-name');
-      
+
+      const themeToggle = document.getElementById("theme-toggle");
+      const themeName = document.getElementById("theme-name");
+
       if (themeToggle && themeName) {
-        themeToggle.addEventListener('click', () => {
+        themeToggle.addEventListener("click", () => {
           currentThemeIndex = (currentThemeIndex + 1) % themes.length;
           const newTheme = themes[currentThemeIndex];
-          
+
           document.documentElement.dataset.theme = newTheme;
-          
+
           // Animate the text change
-          themeName.style.opacity = '0';
-          themeName.style.transform = 'translateY(4px)';
-          
+          themeName.style.opacity = "0";
+          themeName.style.transform = "translateY(4px)";
+
           setTimeout(() => {
             themeName.innerText = newTheme;
-            themeName.style.opacity = '1';
-            themeName.style.transform = 'translateY(0)';
+            themeName.style.opacity = "1";
+            themeName.style.transform = "translateY(0)";
           }, 200);
         });
       }
