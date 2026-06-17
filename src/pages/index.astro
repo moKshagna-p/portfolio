@@ -8,16 +8,14 @@ const email = "mailto:mokshagnareddy45@gmail.com";
 
 const BLUR_FADE_DELAY = 0.04;
 
-// Fetch repositories and sort by stars to approximate pinned repos
+// Fetch pinned repos from GitHub
+const PINNED = ["musico", "cinder", "LeetBar", "letterboxd-CLI"];
 let repos = [];
 try {
   const res = await fetch("https://api.github.com/users/moKshagna-p/repos?per_page=100");
   if (res.ok) {
     const allRepos = await res.json();
-    repos = allRepos
-      .filter((r) => !r.fork)
-      .sort((a, b) => b.stargazers_count - a.stargazers_count)
-      .slice(0, 6);
+    repos = allRepos.filter((r) => PINNED.includes(r.name));
   }
 } catch (e) {
   console.error("Failed to fetch repos", e);
