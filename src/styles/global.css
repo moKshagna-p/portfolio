@@ -18,12 +18,6 @@
   --muted: #a1a1aa;
 }
 
-[data-theme='parchment'] {
-  --background: #F4EFE7;
-  --foreground: #2A2621;
-  --muted: #7E7569;
-}
-
 [data-theme='graphite'] {
   --background: #1C1C1C;
   --foreground: #F5F5F5;
