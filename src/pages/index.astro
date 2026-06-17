@@ -67,7 +67,7 @@ try {
       <section class="flex-1 mb-16">
         <BlurFade delay={BLUR_FADE_DELAY * 3} client:load>
           <div class="mb-6">
-            <h2 class="text-xs font-bold text-foreground opacity-90">
+            <h2 class="text-xs font-medium text-foreground opacity-90">
               Projects
             </h2>
           </div>
@@ -76,25 +76,20 @@ try {
         <div class="flex flex-col gap-2">
           {repos.map((repo, i) => (
             <BlurFade delay={BLUR_FADE_DELAY * 4 + i * 0.1} client:load>
-              <a 
-                href={repo.html_url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="group flex flex-col md:flex-row md:items-start gap-2 md:gap-8 -mx-4 py-2 px-4 rounded-md hover:bg-white/[0.04] transition-colors"
-              >
-                <div class="flex items-center gap-3 md:w-56 shrink-0 pt-0.5">
-                  <span class="text-muted-foreground/50 text-sm">[*]</span>
-                  <h3 class="font-medium text-sm text-foreground/90 group-hover:text-white transition-colors">{repo.name}</h3>
-                </div>
-                <p class="text-sm text-muted-foreground/80 leading-relaxed pt-0.5">
-                  {repo.description || "No description provided."}
-                  {repo.stargazers_count > 0 && (
-                    <span class="inline-flex items-center gap-1 ml-3 text-xs text-muted-foreground/50">
-                      ★ {repo.stargazers_count}
-                    </span>
-                  )}
-                </p>
-              </a>
+              <div class="group flex items-baseline gap-3 -mx-4 py-2 px-4 rounded-md hover:bg-white/[0.04] transition-colors">
+                <span class="text-muted-foreground/40 shrink-0">[*]</span>
+                <a 
+                  href={repo.html_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="flex items-baseline gap-x-3 min-w-0"
+                >
+                  <strong class="font-medium text-foreground/90 group-hover:text-white transition-colors shrink-0">{repo.name}</strong>
+                  <span class="text-muted-foreground/70 truncate">
+                    {repo.description || ""}
+                  </span>
+                </a>
+              </div>
             </BlurFade>
           ))}
         </div>
