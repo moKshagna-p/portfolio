@@ -12,117 +12,177 @@ const BLUR_FADE_DELAY = 0.04;
 const PINNED = ["musico", "letterboxd-CLI", "f1-cli", "lrc", "cinder", "LeetBar"];
 let repos = [];
 try {
-  const res = await fetch("https://api.github.com/users/moKshagna-p/repos?per_page=100");
-  if (res.ok) {
-    const allRepos = await res.json();
-    repos = PINNED.map(name => allRepos.find(r => r.name === name)).filter(Boolean);
-  }
+    const res = await fetch(
+        "https://api.github.com/users/moKshagna-p/repos?per_page=100",
+    );
+    if (res.ok) {
+        const allRepos = await res.json();
+        repos = PINNED.map(name => allRepos.find(r => r.name === name)).filter(Boolean);
+    }
 } catch (e) {
-  console.error("Failed to fetch repos", e);
+    console.error("Failed to fetch repos", e);
 }
 ---
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Mokshagna Reddy</title>
-    <meta
-      name="description"
-      content="Mokshagna Reddy — minimal portfolio."
-    />
-    <meta name="author" content="Mokshagna Reddy" />
-    <meta name="theme-color" content="#000000" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      .font-mono-stack {
-        font-family: "Berkeley Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      }
-    </style>
-  </head>
-  <body class="relative flex min-h-screen w-full flex-col overflow-hidden bg-background text-foreground font-mono-stack antialiased selection:bg-white/20">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Mokshagna Reddy</title>
+        <meta
+            name="description"
+            content="Mokshagna Reddy — minimal portfolio."
+        />
+        <meta name="author" content="Mokshagna Reddy" />
+        <meta name="theme-color" content="#000000" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            .font-mono-stack {
+                font-family:
+                    "Berkeley Mono", "IBM Plex Mono", ui-monospace,
+                    SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+                    "Courier New", monospace;
+            }
+        </style>
+    </head>
+    <body
+        class="relative flex min-h-screen w-full flex-col overflow-hidden bg-background text-foreground font-mono-stack antialiased selection:bg-white/20"
+    >
+        <main
+            class="relative z-10 w-full max-w-4xl mx-auto px-6 py-20 md:py-32 flex flex-col min-h-screen"
+        >
+            <header class="mb-24">
+                <BlurFade delay={BLUR_FADE_DELAY} client:load>
+                    <div class="mb-8 overflow-x-auto pb-4">
+                        <OpencodeName />
+                    </div>
+                </BlurFade>
 
-    <main class="relative z-10 w-full max-w-4xl mx-auto px-6 py-20 md:py-32 flex flex-col min-h-screen">
-      <header class="mb-24">
-        <BlurFade delay={BLUR_FADE_DELAY} client:load>
-          <div class="mb-8 overflow-x-auto pb-4">
-            <OpencodeName />
-          </div>
-        </BlurFade>
+                <BlurFade delay={BLUR_FADE_DELAY * 2} client:load>
+                    <p
+                        class="text-muted-foreground text-sm leading-relaxed max-w-xl opacity-80"
+                    >
+                        frontend dev & cli/tui builder.
+                    </p>
+                </BlurFade>
+            </header>
 
-        <BlurFade delay={BLUR_FADE_DELAY * 2} client:load>
-          <p class="text-muted-foreground text-sm leading-relaxed max-w-xl opacity-80">
-            frontend dev & cli/tui builder. product systems.
-            built with absolute minimalism.
-          </p>
-        </BlurFade>
-      </header>
+            <section class="flex-1 mb-16">
+                <BlurFade delay={BLUR_FADE_DELAY * 3} client:load>
+                    <div class="mb-6">
+                        <h2
+                            class="text-xs font-medium text-foreground opacity-90"
+                        >
+                            Projects
+                        </h2>
+                    </div>
+                </BlurFade>
 
-      <section class="flex-1 mb-16">
-        <BlurFade delay={BLUR_FADE_DELAY * 3} client:load>
-          <div class="mb-6">
-            <h2 class="text-xs font-medium text-foreground opacity-90">
-              Projects
-            </h2>
-          </div>
-        </BlurFade>
-        
-        <div class="flex flex-col gap-2">
-          {repos.map((repo, i) => (
-            <BlurFade delay={BLUR_FADE_DELAY * 4 + i * 0.1} client:load>
-              <div class="group flex items-baseline gap-3 -mx-4 py-2 px-4 rounded-md hover:bg-white/[0.04] transition-colors">
-                <span class="text-muted-foreground/40 shrink-0">[*]</span>
-                <a 
-                  href={repo.html_url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  class="flex items-baseline justify-between w-full gap-x-3 min-w-0"
+                <div class="flex flex-col gap-2">
+                    {
+                        repos.map((repo, i) => (
+                            <div class={i >= 4 ? "hidden extra-project" : ""}>
+                                <BlurFade
+                                    delay={BLUR_FADE_DELAY * 4 + i * 0.1}
+                                    client:load
+                                >
+                                    <div class="group flex items-baseline gap-3 -mx-4 py-2 px-4 rounded-md hover:bg-white/[0.04] transition-colors">
+                                        <span class="text-muted-foreground/40 shrink-0">
+                                            [*]
+                                        </span>
+                                        <a
+                                            href={repo.html_url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="flex items-baseline justify-between w-full gap-x-3 min-w-0"
+                                        >
+                                            <strong class="font-medium text-foreground/90 group-hover:text-white transition-colors shrink-0">
+                                                {repo.name}
+                                            </strong>
+                                            <span class="text-muted-foreground/70 truncate text-right">
+                                                {repo.description || ""}
+                                            </span>
+                                        </a>
+                                    </div>
+                                </BlurFade>
+                            </div>
+                        ))
+                    }
+                </div>
+                {repos.length > 4 && (
+                    <BlurFade delay={BLUR_FADE_DELAY * 4 + 0.4} client:load>
+                        <button id="show-more-projects" class="text-muted-foreground/70 hover:text-foreground text-[15px] mt-2 transition-colors">
+                            + show more
+                        </button>
+                    </BlurFade>
+                )}
+            </section>
+
+            <BlurFade delay={BLUR_FADE_DELAY * 5} client:load className="mt-8">
+                <footer
+                    class="flex justify-between items-center text-xs border-t border-white/10 pt-8 opacity-80"
                 >
-                  <strong class="font-medium text-foreground/90 group-hover:text-white transition-colors shrink-0">{repo.name}</strong>
-                  <span class="text-muted-foreground/70 truncate text-right">
-                    {repo.description || ""}
-                  </span>
-                </a>
-              </div>
+                    <div class="flex gap-6 text-muted-foreground">
+                        <a
+                            href={github}
+                            target="_blank"
+                            rel="me noopener noreferrer"
+                            class="hover:text-foreground transition-colors"
+                            >github</a
+                        >
+                        <a
+                            href={email}
+                            class="hover:text-foreground transition-colors"
+                            >email</a
+                        >
+                    </div>
+                    <button
+                        id="theme-toggle"
+                        class="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                        <span id="theme-name">midnight</span>
+                    </button>
+                </footer>
             </BlurFade>
-          ))}
-        </div>
-      </section>
+        </main>
 
-      <BlurFade delay={BLUR_FADE_DELAY * 5} client:load className="mt-8">
-        <footer class="flex justify-between items-center text-xs border-t border-white/10 pt-8 opacity-80">
-          <div class="flex gap-6 text-muted-foreground">
-            <a href={github} target="_blank" rel="me noopener noreferrer" class="hover:text-foreground transition-colors">github</a>
-            <a href={email} class="hover:text-foreground transition-colors">email</a>
-          </div>
-          <button id="theme-toggle" class="text-muted-foreground hover:text-foreground transition-colors">
-            <span id="theme-name">midnight</span>
-          </button>
-        </footer>
-      </BlurFade>
-    </main>
+        <script>
+            const themes = ["midnight", "graphite"];
+            let currentThemeIndex = 0;
 
-    <script>
-      const themes = ["midnight", "graphite"];
-      let currentThemeIndex = 0;
+            const themeToggle = document.getElementById("theme-toggle");
+            const themeName = document.getElementById("theme-name");
 
-      const themeToggle = document.getElementById("theme-toggle");
-      const themeName = document.getElementById("theme-name");
+            if (themeToggle && themeName) {
+                themeToggle.addEventListener("click", () => {
+                    currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+                    const newTheme = themes[currentThemeIndex];
+                    document.documentElement.dataset.theme = newTheme;
+                    themeName.innerText = newTheme;
+                });
+            }
 
-      if (themeToggle && themeName) {
-        themeToggle.addEventListener("click", () => {
-          currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-          const newTheme = themes[currentThemeIndex];
-          document.documentElement.dataset.theme = newTheme;
-          themeName.innerText = newTheme;
-        });
-      }
-    </script>
-  </body>
+            const showMoreBtn = document.getElementById("show-more-projects");
+            if (showMoreBtn) {
+                let isExpanded = false;
+                showMoreBtn.addEventListener("click", () => {
+                    isExpanded = !isExpanded;
+                    document.querySelectorAll(".extra-project").forEach(el => {
+                        if (isExpanded) {
+                            el.classList.remove("hidden");
+                        } else {
+                            el.classList.add("hidden");
+                        }
+                    });
+                    showMoreBtn.innerText = isExpanded ? "- show less" : "+ show more";
+                });
+            }
+        </script>
+    </body>
 </html>
