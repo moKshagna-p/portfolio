@@ -60,7 +60,7 @@ try {
         >
             <header class="mb-24">
                 <BlurFade delay={BLUR_FADE_DELAY} client:load>
-                    <div class="mb-8 overflow-x-auto pb-4">
+                    <div class="mb-8 pb-4">
                         <OpencodeName />
                     </div>
                 </BlurFade>
@@ -101,12 +101,12 @@ try {
                                             href={repo.html_url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            class="flex items-baseline justify-between w-full gap-x-3 min-w-0"
+                                            class="flex flex-col sm:flex-row sm:items-baseline justify-between w-full gap-y-1 sm:gap-x-3 min-w-0"
                                         >
                                             <strong class="font-medium text-foreground/90 group-hover:text-white transition-colors shrink-0">
                                                 {repo.name}
                                             </strong>
-                                            <span class="text-muted-foreground/70 truncate text-right">
+                                            <span class="text-muted-foreground/70 text-sm sm:text-base line-clamp-2 sm:line-clamp-1 sm:truncate sm:text-right">
                                                 {repo.description || ""}
                                             </span>
                                         </a>
@@ -127,7 +127,7 @@ try {
 
             <BlurFade delay={BLUR_FADE_DELAY * 5} client:load className="mt-8">
                 <footer
-                    class="flex justify-between items-center text-xs border-t border-white/10 pt-8 opacity-80"
+                    class="flex flex-col sm:flex-row justify-between items-center sm:items-start text-xs border-t border-white/10 pt-8 opacity-80 gap-6 sm:gap-0"
                 >
                     <div class="flex gap-6 text-muted-foreground">
                         <a
