@@ -8,20 +8,15 @@ const email = "mailto:mokshagnareddy45@gmail.com";
 
 const BLUR_FADE_DELAY = 0.04;
 
-// Fetch pinned repos from GitHub
-const PINNED = ["musico", "letterboxd-CLI", "f1-cli", "lrc", "cinder", "LeetBar"];
-let repos = [];
-try {
-    const res = await fetch(
-        "https://api.github.com/users/moKshagna-p/repos?per_page=100",
-    );
-    if (res.ok) {
-        const allRepos = await res.json();
-        repos = PINNED.map(name => allRepos.find(r => r.name === name)).filter(Boolean);
-    }
-} catch (e) {
-    console.error("Failed to fetch repos", e);
-}
+// Hardcoded repos to avoid GitHub API rate limits
+const repos = [
+    { name: "musico", html_url: "https://github.com/moKshagna-p/musico", description: "building letterboxd for music" },
+    { name: "letterboxd-CLI", html_url: "https://github.com/moKshagna-p/letterboxd-CLI", description: "A letterboxd-cli" },
+    { name: "f1-cli", html_url: "https://github.com/moKshagna-p/f1-cli", description: "F1 in your terminal" },
+    { name: "lrc", html_url: "https://github.com/moKshagna-p/lrc", description: "Full-screen terminal UI for synced Apple Music lyrics with album art" },
+    { name: "cinder", html_url: "https://github.com/moKshagna-p/cinder", description: "music visualization from your terminal" },
+    { name: "LeetBar", html_url: "https://github.com/moKshagna-p/LeetBar", description: "macOS menu bar app for tracking LeetCode solved counts and streaks at a glance" }
+];
 ---
 
 <!doctype html>
@@ -53,10 +48,10 @@ try {
         </style>
     </head>
     <body
-        class="relative flex min-h-screen w-full flex-col overflow-hidden bg-background text-foreground font-mono-stack antialiased selection:bg-white/20"
+        class="relative flex min-h-[100dvh] w-full flex-col bg-background text-foreground font-mono-stack antialiased selection:bg-white/20"
     >
         <main
-            class="relative z-10 w-full max-w-4xl mx-auto px-6 py-12 md:py-20 flex flex-col h-[100dvh]"
+            class="relative z-10 w-full max-w-4xl mx-auto px-6 py-12 md:py-20 flex flex-1 flex-col"
         >
             <header class="mb-10 md:mb-16">
                 <BlurFade delay={BLUR_FADE_DELAY} client:load>
@@ -74,7 +69,7 @@ try {
                 </BlurFade>
             </header>
 
-            <section class="flex-1 mb-4 md:mb-8 overflow-y-auto hide-scrollbar">
+            <section class="mb-4 md:mb-8 pt-2">
                 <BlurFade delay={BLUR_FADE_DELAY * 3} client:load>
                     <div class="mb-6">
                         <h2
@@ -106,7 +101,7 @@ try {
                                             <strong class="font-medium text-foreground/90 group-hover:text-white transition-colors shrink-0">
                                                 {repo.name}
                                             </strong>
-                                            <span class="text-muted-foreground/70 text-sm sm:text-base line-clamp-2 sm:line-clamp-1 sm:truncate sm:text-right">
+                                            <span class="text-muted-foreground/70 text-sm sm:text-base sm:text-right">
                                                 {repo.description || ""}
                                             </span>
                                         </a>
