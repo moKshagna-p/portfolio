@@ -90,9 +90,9 @@ const repos = [
         class="relative flex min-h-[100dvh] w-full flex-col bg-background text-foreground font-mono-stack antialiased selection:bg-white/20"
     >
         <main
-            class="relative z-10 w-full max-w-4xl mx-auto px-6 py-12 md:py-20 flex flex-1 flex-col"
+            class="relative z-10 w-full max-w-4xl mx-auto px-6 py-10 md:py-12 flex flex-1 flex-col"
         >
-            <header class="mb-10 md:mb-16">
+            <header class="mb-8 md:mb-10">
                 <BlurFade delay={BLUR_FADE_DELAY} client:load>
                     <div class="mb-6">
                         <OpencodeName />
@@ -108,7 +108,7 @@ const repos = [
                 </BlurFade>
             </header>
 
-            <section class="mb-4 md:mb-8 pt-2">
+            <section class="mb-2 md:mb-4 pt-2">
                 <BlurFade delay={BLUR_FADE_DELAY * 3} client:load>
                     <div class="mb-6">
                         <h2
@@ -162,6 +162,94 @@ const repos = [
                         </BlurFade>
                     )
                 }
+            </section>
+
+            <section
+                id="github-figures"
+                class="github-figures"
+                aria-label="Live GitHub figures"
+            >
+                <a
+                    class="github-figure"
+                    href={github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View GitHub stars"
+                >
+                    <div class="github-stars-graphic" aria-hidden="true">
+                        <svg
+                            id="github-stars-chart"
+                            viewBox="0 0 520 510"
+                            preserveAspectRatio="none"
+                        >
+                            <defs>
+                                <pattern
+                                    id="star-stripes"
+                                    width="13"
+                                    height="13"
+                                    patternUnits="userSpaceOnUse"
+                                    patternTransform="rotate(45)"
+                                >
+                                    <line
+                                        x1="0"
+                                        y1="0"
+                                        x2="0"
+                                        y2="13"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    />
+                                </pattern>
+                                <linearGradient id="star-fade" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0" stop-color="#8d888a" stop-opacity="0.58" />
+                                    <stop offset="1" stop-color="#8d888a" stop-opacity="0" />
+                                </linearGradient>
+                            </defs>
+                            <path
+                                id="github-stars-area"
+                                d="M 16 490 L 85 468 L 130 442 L 168 384 L 203 348 L 240 278 L 286 234 L 335 168 L 389 121 L 444 43 L 444 490 Z"
+                                fill="url(#star-stripes)"
+                                opacity="0.42"
+                            ></path>
+                            <path
+                                id="github-stars-gradient"
+                                d="M 16 490 L 85 468 L 130 442 L 168 384 L 203 348 L 240 278 L 286 234 L 335 168 L 389 121 L 444 43 L 444 490 Z"
+                                fill="url(#star-fade)"
+                            ></path>
+                            <path
+                                id="github-stars-line"
+                                d="M 16 490 L 85 468 L 130 442 L 168 384 L 203 348 L 240 278 L 286 234 L 335 168 L 389 121 L 444 43"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                vector-effect="non-scaling-stroke"
+                            ></path>
+                        </svg>
+                    </div>
+                    <p class="github-figure-caption">
+                        <span>Fig 1.</span>
+                        <strong id="github-stars" aria-live="polite">—</strong>
+                        <span>GitHub Stars</span>
+                    </p>
+                </a>
+
+                <a
+                    class="github-figure"
+                    href={github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View GitHub contribution activity"
+                >
+                    <div
+                        id="github-contributions"
+                        class="github-contribution-grid"
+                        aria-hidden="true"
+                    ></div>
+                    <p class="github-figure-caption">
+                        <span>Fig 2.</span>
+                        <strong id="github-contribution-total" aria-live="polite">—</strong>
+                        <span>Contributions</span>
+                    </p>
+                </a>
             </section>
 
             <BlurFade
@@ -306,6 +394,89 @@ const repos = [
                         : "+ show more";
                 });
             }
+
+            const githubUser = "moKshagna-p";
+            const githubStars = document.getElementById("github-stars");
+            const githubContributionTotal = document.getElementById(
+                "github-contribution-total",
+            );
+            const githubContributionGrid = document.getElementById(
+                "github-contributions",
+            );
+            const formatCount = (value: number) =>
+                new Intl.NumberFormat("en", {
+                    notation: "compact",
+                    maximumFractionDigits: 1,
+                }).format(value);
+
+            const renderContributions = (
+                contributions: Array<{ date: string; count: number; level?: number }>,
+            ) => {
+                if (!githubContributionGrid) return;
+
+                const activity = new Map(
+                    contributions.map((contribution) => [
+                        contribution.date,
+                        contribution,
+                    ]),
+                );
+                const today = new Date();
+                const start = new Date(today);
+                start.setDate(today.getDate() - 379);
+                const cells = Array.from({ length: 380 }, (_, index) => {
+                    const date = new Date(start);
+                    date.setDate(start.getDate() + index);
+                    const key = date.toISOString().slice(0, 10);
+                    const contribution = activity.get(key);
+                    const level = Math.min(4, contribution?.level ?? (contribution?.count ? 1 : 0));
+                    return `<i class="github-contribution-cell" data-level="${level}"></i>`;
+                });
+
+                githubContributionGrid.innerHTML = cells.join("");
+            };
+
+            const loadGithubFigures = async () => {
+                try {
+                    const [repositoriesResponse, contributionsResponse] =
+                        await Promise.all([
+                            fetch(
+                                `https://api.github.com/users/${githubUser}/repos?per_page=100&type=owner`,
+                            ),
+                            fetch(
+                                `https://github-contributions-api.jogruber.de/v4/${githubUser}?y=last`,
+                            ),
+                        ]);
+
+                    if (!repositoriesResponse.ok || !contributionsResponse.ok) {
+                        throw new Error("GitHub figures are unavailable");
+                    }
+
+                    const repositories = await repositoriesResponse.json();
+                    const contributionData = await contributionsResponse.json();
+                    const contributions = contributionData.contributions || [];
+                    const stars = repositories.reduce(
+                        (total: number, repository: { stargazers_count: number }) =>
+                            total + repository.stargazers_count,
+                        0,
+                    );
+                    const contributionTotal = contributions.reduce(
+                        (total: number, contribution: { count: number }) =>
+                            total + contribution.count,
+                        0,
+                    );
+
+                    if (githubStars) githubStars.textContent = formatCount(stars);
+                    if (githubContributionTotal) {
+                        githubContributionTotal.textContent = formatCount(contributionTotal);
+                    }
+                    renderContributions(contributions);
+                } catch {
+                    if (githubStars) githubStars.textContent = "—";
+                    if (githubContributionTotal) githubContributionTotal.textContent = "—";
+                }
+            };
+
+            loadGithubFigures();
         </script>
     </body>
 </html>
