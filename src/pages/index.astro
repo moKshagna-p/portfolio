@@ -227,7 +227,7 @@ const repos = [
                     </div>
                     <p class="github-figure-caption">
                         <span>Fig 1.</span>
-                        <strong id="github-stars" aria-live="polite">—</strong>
+                        <strong id="github-stars" aria-live="polite">58</strong>
                         <span>GitHub Stars</span>
                     </p>
                 </a>
@@ -435,48 +435,41 @@ const repos = [
                 githubContributionGrid.innerHTML = cells.join("");
             };
 
-            const loadGithubFigures = async () => {
-                try {
-                    const [repositoriesResponse, contributionsResponse] =
-                        await Promise.all([
-                            fetch(
-                                `https://api.github.com/users/${githubUser}/repos?per_page=100&type=owner`,
-                            ),
-                            fetch(
-                                `https://github-contributions-api.jogruber.de/v4/${githubUser}?y=last`,
-                            ),
-                        ]);
-
-                    if (!repositoriesResponse.ok || !contributionsResponse.ok) {
-                        throw new Error("GitHub figures are unavailable");
-                    }
-
-                    const repositories = await repositoriesResponse.json();
-                    const contributionData = await contributionsResponse.json();
-                    const contributions = contributionData.contributions || [];
-                    const stars = repositories.reduce(
-                        (total: number, repository: { stargazers_count: number }) =>
-                            total + repository.stargazers_count,
-                        0,
+            fetch(
+                `https://api.github.com/users/${githubUser}/repos?per_page=100&type=owner`,
+            )
+                .then((response) => (response.ok ? response.json() : null))
+                .then((repositories) => {
+                    if (!repositories || !githubStars) return;
+                    githubStars.textContent = formatCount(
+                        repositories.reduce(
+                            (total: number, repository: { stargazers_count: number }) =>
+                                total + repository.stargazers_count,
+                            0,
+                        ),
                     );
-                    const contributionTotal = contributions.reduce(
-                        (total: number, contribution: { count: number }) =>
-                            total + contribution.count,
-                        0,
-                    );
+                })
+                .catch(() => {});
 
-                    if (githubStars) githubStars.textContent = formatCount(stars);
+            fetch(
+                `https://github-contributions-api.jogruber.de/v4/${githubUser}?y=last`,
+            )
+                .then((response) => (response.ok ? response.json() : null))
+                .then((data) => {
+                    if (!data) return;
+                    const contributions = data.contributions || [];
                     if (githubContributionTotal) {
-                        githubContributionTotal.textContent = formatCount(contributionTotal);
+                        githubContributionTotal.textContent = formatCount(
+                            contributions.reduce(
+                                (total: number, contribution: { count: number }) =>
+                                    total + contribution.count,
+                                0,
+                            ),
+                        );
                     }
                     renderContributions(contributions);
-                } catch {
-                    if (githubStars) githubStars.textContent = "—";
-                    if (githubContributionTotal) githubContributionTotal.textContent = "—";
-                }
-            };
-
-            loadGithubFigures();
+                })
+                .catch(() => {});
         </script>
     </body>
 </html>

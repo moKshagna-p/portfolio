@@ -12,7 +12,11 @@ test("build renders the live GitHub figures immediately after Projects", () => {
     const figures = page.indexOf('id="github-figures"');
 
     assert.ok(figures > projects, "GitHub figures should follow Projects");
-    assert.match(page, /id="github-stars"/);
+    assert.match(
+        page,
+        /id="github-stars" aria-live="polite"[^>]*>\s*58/,
+        "Star count should remain visible when GitHub's unauthenticated API is rate-limited",
+    );
     assert.match(page, /id="github-contributions"/);
 
     const css = readdirSync("dist/_astro")
