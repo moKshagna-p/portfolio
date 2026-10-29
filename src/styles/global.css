@@ -1,15 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --animate-grid: grid 15s linear infinite;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted-foreground: var(--muted);
 }
 
-@keyframes grid {
-  0% { transform: translateY(-50%); }
-  100% { transform: translateY(0); }
+/* Mirrors the old framer-motion BlurFade: rise 12px, unblur, fade in */
+.blur-fade {
+  animation: blur-fade 0.4s ease-out calc(0.04s + var(--delay, 0s)) both;
+}
+
+@keyframes blur-fade {
+  from { opacity: 0; transform: translateY(6px); filter: blur(6px); }
+  to { opacity: 1; transform: translateY(-6px); filter: blur(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blur-fade { animation: none; }
 }
 
 :root {

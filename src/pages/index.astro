@@ -1,6 +1,5 @@
 ---
 import "../styles/global.css";
-import BlurFade from "@/components/magicui/blur-fade";
 import OpencodeName from "@/components/OpencodeName.astro";
 
 const github = "https://github.com/moKshagna-p";
@@ -12,50 +11,24 @@ const email = "mailto:mokshagnareddy45@gmail.com";
 const BLUR_FADE_DELAY = 0.04;
 
 // Hardcoded repos to avoid GitHub API rate limits
+const gh = "https://github.com/moKshagna-p/";
 const repos = [
-    {
-        name: "musico",
-        html_url: "https://github.com/moKshagna-p/musico",
-        description: "building letterboxd for music",
-    },
-    {
-        name: "letterboxd-CLI",
-        html_url: "https://github.com/moKshagna-p/letterboxd-CLI",
-        description: "A letterboxd-cli",
-    },
-    {
-        name: "f1-cli",
-        html_url: "https://github.com/moKshagna-p/f1-cli",
-        description: "F1 in your terminal",
-    },
-    {
-        name: "lrc",
-        html_url: "https://github.com/moKshagna-p/lrc",
-        description:
-            "Full-screen terminal UI for synced Apple Music lyrics with album art",
-    },
-    {
-        name: "sailor",
-        html_url: "https://github.com/moKshagna-p/sailor",
-        description: "honest AI resume tailoring, without invented claims.",
-    },
-    {
-        name: "musicbar",
-        html_url: "https://github.com/moKshagna-p/musicbar-macos",
-        description: "native macOS now-playing bar with glass UI and controls",
-    },
-    {
-        name: "cinder",
-        html_url: "https://github.com/moKshagna-p/cinder",
-        description: "music visualization from your terminal",
-    },
-    {
-        name: "LeetBar",
-        html_url: "https://github.com/moKshagna-p/LeetBar",
-        description:
-            "macOS menu bar app for tracking LeetCode solved counts and streaks at a glance",
-    },
+    { name: "musico", repo: "musico", description: "building letterboxd for music" },
+    { name: "sailor", repo: "sailor", description: "honest AI resume tailoring, without invented claims." },
+    { name: "opentile", repo: "opentile", description: "native tiling window manager for macOS, built around trackpad gestures" },
+    { name: "moth", repo: "moth", description: "native macOS browser built with Rust, SwiftUI, and WebKit" },
+    { name: "dotfiles", repo: "dotfiles", description: "macOS dotfiles" },
+    { name: "codex-powers", repo: "codex-powers", description: "a smarter Codex workflow" },
+    { name: "letterboxd-CLI", repo: "letterboxd-CLI", description: "A letterboxd-cli" },
+    { name: "f1-cli", repo: "f1-cli", description: "F1 in your terminal" },
+    { name: "lrc", repo: "lrc", description: "Full-screen terminal UI for synced Apple Music lyrics with album art" },
+    { name: "musicbar", repo: "musicbar-macos", description: "native macOS now-playing bar with glass UI and controls" },
+    { name: "cinder", repo: "cinder", description: "music visualization from your terminal" },
+    { name: "LeetBar", repo: "LeetBar", description: "macOS menu bar app for tracking LeetCode solved counts and streaks at a glance" },
 ];
+
+// Edit by hand whenever it changes
+const now = "building musico";
 ---
 
 <!doctype html>
@@ -71,6 +44,12 @@ const repos = [
         />
         <meta name="author" content="Mokshagna Reddy" />
         <meta name="theme-color" content="#000000" />
+        <script is:inline>
+            try {
+                const theme = localStorage.getItem("theme");
+                if (theme) document.documentElement.dataset.theme = theme;
+            } catch {}
+        </script>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
@@ -93,23 +72,23 @@ const repos = [
             class="relative z-10 w-full max-w-4xl mx-auto px-6 py-10 md:py-12 flex flex-1 flex-col"
         >
             <header class="mb-8 md:mb-10">
-                <BlurFade delay={BLUR_FADE_DELAY} client:load>
+                <div class="blur-fade" style={`--delay:${BLUR_FADE_DELAY}s`}>
                     <div class="mb-6">
                         <OpencodeName />
                     </div>
-                </BlurFade>
+                </div>
 
-                <BlurFade delay={BLUR_FADE_DELAY * 2} client:load>
+                <div class="blur-fade" style={`--delay:${BLUR_FADE_DELAY * 2}s`}>
                     <p
                         class="text-muted-foreground text-sm leading-relaxed max-w-xl opacity-80"
                     >
                         web dev & cli/tui builder.
                     </p>
-                </BlurFade>
+                </div>
             </header>
 
             <section class="mb-2 md:mb-4 pt-2">
-                <BlurFade delay={BLUR_FADE_DELAY * 3} client:load>
+                <div class="blur-fade" style={`--delay:${BLUR_FADE_DELAY * 3}s`}>
                     <div class="mb-6">
                         <h2
                             class="text-xs font-medium text-foreground opacity-90"
@@ -117,22 +96,19 @@ const repos = [
                             Projects
                         </h2>
                     </div>
-                </BlurFade>
+                </div>
 
                 <div class="flex flex-col gap-2">
                     {
                         repos.map((repo, i) => (
                             <div class={i >= 6 ? "hidden extra-project" : ""}>
-                                <BlurFade
-                                    delay={BLUR_FADE_DELAY * 4 + i * 0.1}
-                                    client:load
-                                >
+                                <div class="blur-fade" style={`--delay:${BLUR_FADE_DELAY * 4 + i * 0.1}s`}>
                                     <div class="group flex items-baseline gap-3 -mx-4 py-2 px-4 rounded-md hover:bg-white/[0.04] transition-colors">
                                         <span class="text-muted-foreground/40 shrink-0">
                                             [*]
                                         </span>
                                         <a
-                                            href={repo.html_url}
+                                            href={gh + repo.repo}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             class="flex flex-col sm:flex-row sm:items-baseline justify-between w-full gap-y-1 sm:gap-x-3 min-w-0"
@@ -141,25 +117,25 @@ const repos = [
                                                 {repo.name}
                                             </strong>
                                             <span class="text-muted-foreground/70 text-sm sm:text-base sm:text-right">
-                                                {repo.description || ""}
+                                                {repo.description}
                                             </span>
                                         </a>
                                     </div>
-                                </BlurFade>
+                                </div>
                             </div>
                         ))
                     }
                 </div>
                 {
                     repos.length > 6 && (
-                        <BlurFade delay={BLUR_FADE_DELAY * 4 + 0.4} client:load>
+                        <div class="blur-fade" style={`--delay:${BLUR_FADE_DELAY * 4 + 0.4}s`}>
                             <button
                                 id="show-more-projects"
                                 class="text-muted-foreground/70 hover:text-foreground text-[15px] mt-2 transition-colors"
                             >
                                 + show more
                             </button>
-                        </BlurFade>
+                        </div>
                     )
                 }
             </section>
@@ -252,11 +228,8 @@ const repos = [
                 </a>
             </section>
 
-            <BlurFade
-                delay={BLUR_FADE_DELAY * 5}
-                client:load
-                className="mt-auto pb-6"
-            >
+            <div class="blur-fade mt-auto pb-6" style={`--delay:${BLUR_FADE_DELAY * 5}s`}>
+                <p class="text-xs text-muted-foreground/70 mb-4">now: {now}</p>
                 <footer
                     class="flex flex-col sm:flex-row justify-between items-center sm:items-start text-xs border-t border-white/10 pt-8 opacity-80 gap-6 sm:gap-0"
                 >
@@ -356,22 +329,29 @@ const repos = [
                         <span id="theme-name">midnight</span>
                     </button>
                 </footer>
-            </BlurFade>
+            </div>
         </main>
 
         <script>
             const themes = ["midnight", "graphite"];
-            let currentThemeIndex = 0;
+            let currentThemeIndex = Math.max(
+                0,
+                themes.indexOf(document.documentElement.dataset.theme ?? ""),
+            );
 
             const themeToggle = document.getElementById("theme-toggle");
             const themeName = document.getElementById("theme-name");
 
             if (themeToggle && themeName) {
+                themeName.innerText = themes[currentThemeIndex];
                 themeToggle.addEventListener("click", () => {
                     currentThemeIndex = (currentThemeIndex + 1) % themes.length;
                     const newTheme = themes[currentThemeIndex];
                     document.documentElement.dataset.theme = newTheme;
                     themeName.innerText = newTheme;
+                    try {
+                        localStorage.setItem("theme", newTheme);
+                    } catch {}
                 });
             }
 

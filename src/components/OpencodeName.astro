@@ -1,25 +1,418 @@
 ---
----
-<div class="font-mono text-[10px] leading-[10px] sm:text-[11px] sm:leading-3 md:text-xs md:leading-[14px] lg:text-sm lg:leading-[18px] text-foreground/90 select-none">
-  <!-- Desktop / Tablet version -->
-  <pre class="hidden sm:block whitespace-pre">
-             █         █                                         ▄    ▄      
-█▀▀▄▀▀▄ █▀▀█ █ ▄▀ ▄▀▀▀ █▀▀▄  ▀▀█ ▄▀▀█ █▀▀▄  ▀▀█     █▀▀▄ █▀▀█ █▀▀█ █▀▀█ █  █ 
-█  █  █ █  █ █▀▄   ▀▀▄ █  █ ▄▀▀█ ▀▄▄█ █  █ ▄▀▀█     █    █▀▀▀ █  █ █  █ ▀▄▄█ 
-▀  ▀  ▀ ▀▀▀▀ ▀  ▀ ▀▀▀  ▀  ▀  ▀▀▀  ▄▄▀ ▀  ▀  ▀▀▀     ▀    ▀▀▀▀ ▀▀▀▀ ▀▀▀▀  ▄▄▀ 
-  </pre>
+// Block-letter art, drawn as a pixel grid: each char is one column of two
+// square pixels (█ both, ▀ top, ▄ bottom).
+const full = [
+  "             █         █                                         ▄    ▄",
+  "█▀▀▄▀▀▄ █▀▀█ █ ▄▀ ▄▀▀▀ █▀▀▄  ▀▀█ ▄▀▀█ █▀▀▄  ▀▀█     █▀▀▄ █▀▀█ █▀▀█ █▀▀█ █  █",
+  "█  █  █ █  █ █▀▄   ▀▀▄ █  █ ▄▀▀█ ▀▄▄█ █  █ ▄▀▀█     █    █▀▀▀ █  █ █  █ ▀▄▄█",
+  "▀  ▀  ▀ ▀▀▀▀ ▀  ▀ ▀▀▀  ▀  ▀  ▀▀▀  ▄▄▀ ▀  ▀  ▀▀▀     ▀    ▀▀▀▀ ▀▀▀▀ ▀▀▀▀  ▄▄▀",
+];
 
-  <!-- Mobile version (Stacked) -->
-  <div class="flex sm:hidden flex-col gap-2">
-<pre class="whitespace-pre">
-             █         █                        
-█▀▀▄▀▀▄ █▀▀█ █ ▄▀ ▄▀▀▀ █▀▀▄  ▀▀█ ▄▀▀█ █▀▀▄  ▀▀█ 
-█  █  █ █  █ █▀▄   ▀▀▄ █  █ ▄▀▀█ ▀▄▄█ █  █ ▄▀▀█ 
-▀  ▀  ▀ ▀▀▀▀ ▀  ▀ ▀▀▀  ▀  ▀  ▀▀▀  ▄▄▀ ▀  ▀  ▀▀▀</pre>
-<pre class="whitespace-pre">
-             ▄    ▄      
-█▀▀▄ █▀▀█ █▀▀█ █▀▀█ █  █ 
-█    █▀▀▀ █  █ █  █ ▀▄▄█ 
-▀    ▀▀▀▀ ▀▀▀▀ ▀▀▀▀  ▄▄▀</pre>
-  </div>
+const variants = [
+  { art: full, class: "hidden sm:block" },
+  { art: full.map((line) => line.slice(0, 48)), class: "sm:hidden" },
+  { art: full.map((line) => line.slice(52)), class: "sm:hidden last-name" },
+].map(({ art, class: cls }) => ({
+  class: cls,
+  cols: Math.max(...art.map((line) => line.length)),
+  rows: art.length * 2,
+  pixels: art.flatMap((line, row) =>
+    [...line].flatMap((ch, x) => [
+      ...("█▀".includes(ch) ? [[x, row * 2]] : []),
+      ...("█▄".includes(ch) ? [[x, row * 2 + 1]] : []),
+    ]),
+  ),
+}));
+---
+<div class="name-art text-foreground/90 select-none" role="img" aria-label="Mokshagna Reddy" data-art={full.join("\n")}>
+  {
+    variants.map((v) => (
+      <svg
+        class={v.class}
+        viewBox={`0 0 ${v.cols} ${v.rows}`}
+        style={`width: calc(${v.cols} * var(--px))`}
+        shape-rendering="crispEdges"
+        aria-hidden="true"
+      >
+        {v.pixels.map(([x, y]) => (
+          <rect x={x} y={y} width="0.92" height="0.92" fill="currentColor" />
+        ))}
+      </svg>
+    ))
+  }
 </div>
+
+<style>
+  .name-art {
+    /* Mobile stacks the 48-column first name; desktop fits all 78 columns. */
+    --px: min(10px, calc((100vw - 3rem) / 48));
+  }
+
+  @media (min-width: 640px) {
+    .name-art {
+      --px: min(10px, calc((100vw - 3rem) / 78));
+    }
+  }
+
+  .last-name {
+    margin-top: calc(2 * var(--px));
+  }
+
+  .name-art {
+    cursor: crosshair;
+    touch-action: manipulation; /* no double-tap zoom when tapping fast */
+    -webkit-tap-highlight-color: transparent;
+  }
+</style>
+
+<script>
+  // Easter egg: tap the name to knock pixels loose. They float (and dodge the
+  // cursor) until gravity is on, then pile up like liquid and follow the
+  // phone's tilt. Typing spells words with them; damage survives a reload.
+  type Particle = { el: SVGRectElement; x: number; y: number; px: number; py: number; tx?: number; ty?: number };
+
+  // 3×5 pixel font for spelling typed words.
+  const FONT: Record<string, string> = {
+    a: ".#. #.# ### #.# #.#", b: "##. #.# ##. #.# ##.", c: ".## #.. #.. #.. .##",
+    d: "##. #.# #.# #.# ##.", e: "### #.. ##. #.. ###", f: "### #.. ##. #.. #..",
+    g: ".## #.. #.# #.# .##", h: "#.# #.# ### #.# #.#", i: "### .#. .#. .#. ###",
+    j: "..# ..# ..# #.# .#.", k: "#.# #.# ##. #.# #.#", l: "#.. #.. #.. #.. ###",
+    m: "#.# ### ### #.# #.#", n: "##. #.# #.# #.# #.#", o: ".#. #.# #.# #.# .#.",
+    p: "##. #.# ##. #.. #..", q: ".#. #.# #.# ##. .##", r: "##. #.# ##. #.# #.#",
+    s: ".## #.. .#. ..# ##.", t: "### .#. .#. .#. .#.", u: "#.# #.# #.# #.# ###",
+    v: "#.# #.# #.# #.# .#.", w: "#.# #.# ### ### #.#", x: "#.# #.# .#. #.# #.#",
+    y: "#.# #.# .#. .#. .#.", z: "### ..# .#. #.. ###",
+    "0": "### #.# #.# #.# ###", "1": ".#. ##. .#. .#. ###", "2": "##. ..# .#. #.. ###",
+    "3": "##. ..# .#. ..# ##.", "4": "#.# #.# ### ..# ..#", "5": "### #.. ##. ..# ##.",
+    "6": ".## #.. ### #.# ###", "7": "### ..# .#. .#. .#.", "8": "### #.# ### #.# ###",
+    "9": "### #.# ### ..# ##.", "!": ".#. .#. .#. ... .#.", "?": "##. ..# .#. ... .#.",
+    ".": "... ... ... ... .#.", "-": "... ... ### ... ...", " ": "... ... ... ... ...",
+  };
+  const SAVE_KEY = "name-damage";
+
+  const name = document.querySelector<HTMLElement>(".name-art")!;
+  const rects = [...name.querySelectorAll<SVGRectElement>("rect")];
+
+  console.log(
+    `%c${name.dataset.art}\n\n%cyou found the console.\nbreak my name, then type something.\nsay hi → mokshagnareddy45@gmail.com`,
+    "font-family:monospace;line-height:1",
+    "font-family:monospace;color:#a1a1aa",
+  );
+
+  const canvas = document.createElement("canvas");
+  canvas.style.cssText =
+    "position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50";
+  const ctx = canvas.getContext("2d")!;
+
+  const controls = document.createElement("div");
+  controls.className = "fixed top-2 right-2 z-50 hidden text-xs text-muted-foreground";
+  controls.innerHTML = ["gravity: off", "type", "rebuild"]
+    .map((label) => `<button class="p-2 hover:text-foreground transition-colors">${label}</button>`)
+    .join("");
+  const [gravityBtn, typeBtn, rebuildBtn] = controls.querySelectorAll("button");
+
+  // Offscreen input so phones get a keyboard; 16px stops iOS zooming on focus.
+  const input = document.createElement("input");
+  input.setAttribute("aria-hidden", "true");
+  input.autocapitalize = "none";
+  input.autocomplete = "off";
+  input.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px;pointer-events:none";
+  document.body.append(canvas, controls, input);
+
+  const STEP = 1000 / 60; // fixed physics rate, same on 60Hz and 120Hz screens
+  let particles: Particle[] = [];
+  const loose = new Set<SVGRectElement>();
+  let size = 10; // pixel size on screen; forces scale with it so phones feel the same
+  let gravity = false;
+  let rebuilding = false;
+  let running = false;
+  let last = 0;
+  let acc = 0;
+  let tilt = { x: 0, y: 1 };
+  let pointer: { x: number; y: number } | null = null;
+  let typed = "";
+  let typeTimer = 0;
+  let holdTimer = 0;
+
+  const resize = () => {
+    const dpr = devicePixelRatio || 1;
+    canvas.width = innerWidth * dpr;
+    canvas.height = innerHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  resize();
+  addEventListener("resize", resize);
+
+  const home = (p: Particle) => {
+    const t = p.el.getBoundingClientRect();
+    return { x: t.x + t.width / 2, y: t.y + t.height / 2 };
+  };
+
+  const save = () => {
+    try {
+      if (loose.size) localStorage.setItem(SAVE_KEY, JSON.stringify([...loose].map((el) => rects.indexOf(el))));
+      else localStorage.removeItem(SAVE_KEY);
+    } catch {}
+  };
+
+  const release = () => {
+    for (const p of particles) p.tx = p.ty = undefined;
+  };
+
+  const simulate = () => {
+    const w = innerWidth;
+    const h = innerHeight;
+    const r = size / 2;
+
+    if (rebuilding) {
+      let settled = true;
+      for (const p of particles) {
+        const t = home(p);
+        p.x += (t.x - p.x) * 0.15;
+        p.y += (t.y - p.y) * 0.15;
+        if (Math.abs(t.x - p.x) + Math.abs(t.y - p.y) > 1) settled = false;
+      }
+      if (settled) {
+        for (const p of particles) p.el.style.opacity = "";
+        particles = [];
+        loose.clear();
+        save();
+        rebuilding = false;
+        controls.classList.replace("flex", "hidden");
+      }
+      return;
+    }
+
+    // Verlet: velocity is the distance moved since the last step.
+    for (const p of particles) {
+      if (p.tx !== undefined && p.ty !== undefined) {
+        p.x += (p.tx - p.x) * 0.15;
+        p.y += (p.ty - p.y) * 0.15;
+        p.px = p.x;
+        p.py = p.y;
+        continue;
+      }
+      let vx = (p.x - p.px) * 0.99;
+      let vy = (p.y - p.py) * 0.99;
+      if (gravity) {
+        vx += tilt.x * size * 0.04;
+        vy += tilt.y * size * 0.04;
+      } else {
+        vx += (Math.random() - 0.5) * size * 0.015;
+        vy += (Math.random() - 0.5) * size * 0.015;
+        if (pointer) {
+          // Floating pixels shy away from the cursor or finger.
+          const dx = p.x - pointer.x;
+          const dy = p.y - pointer.y;
+          const d = Math.hypot(dx, dy) || 1;
+          const reach = size * 6;
+          if (d < reach) {
+            vx += (dx / d) * (1 - d / reach) * size * 0.12;
+            vy += (dy / d) * (1 - d / reach) * size * 0.12;
+          }
+        }
+      }
+      p.px = p.x;
+      p.py = p.y;
+      p.x += vx;
+      p.y += vy;
+    }
+
+    // ponytail: O(n²) pair checks, fine for the ~180 pixels in the name.
+    const free = particles.filter((p) => p.tx === undefined);
+    for (let k = 0; k < 3; k++) {
+      for (let i = 0; i < free.length; i++) {
+        for (let j = i + 1; j < free.length; j++) {
+          const a = free[i];
+          const b = free[j];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const d = Math.hypot(dx, dy);
+          if (d >= size || d === 0) continue;
+          const push = (size - d) / 2 / d;
+          a.x -= dx * push;
+          a.y -= dy * push;
+          b.x += dx * push;
+          b.y += dy * push;
+        }
+      }
+      for (const p of free) {
+        const vx = p.x - p.px;
+        const vy = p.y - p.py;
+        if (p.x < r) (p.x = r), (p.px = r + vx * 0.5);
+        if (p.x > w - r) (p.x = w - r), (p.px = w - r + vx * 0.5);
+        if (p.y < r) (p.y = r), (p.py = r + vy * 0.5);
+        if (p.y > h - r) (p.y = h - r), (p.py = h - r + vy * 0.5);
+      }
+    }
+  };
+
+  const frame = (now: number) => {
+    acc = Math.min(acc + now - last, STEP * 4); // cap catch-up after a background tab
+    last = now;
+    while (acc >= STEP) {
+      simulate();
+      acc -= STEP;
+    }
+
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    ctx.fillStyle = getComputedStyle(name).color;
+    const s = size * 0.92;
+    for (const p of particles) ctx.fillRect(p.x - s / 2, p.y - s / 2, s, s);
+
+    running = particles.length > 0;
+    if (running) requestAnimationFrame(frame);
+  };
+
+  const start = () => {
+    controls.classList.replace("hidden", "flex");
+    if (running || !particles.length) return;
+    running = true;
+    last = performance.now();
+    acc = 0;
+    requestAnimationFrame(frame);
+  };
+
+  const measure = () => {
+    const visible = rects.find((el) => el.getBoundingClientRect().width);
+    if (visible) size = visible.getBoundingClientRect().width / 0.92;
+    return visible;
+  };
+
+  const knock = (el: SVGRectElement, x: number, y: number, vx: number, vy: number) => {
+    loose.add(el);
+    el.style.opacity = "0";
+    particles.push({ el, x, y, px: x - vx, py: y - vy });
+  };
+
+  const spell = (text: string) => {
+    if (!particles.length || rebuilding) return;
+    // Only whole letters: drop characters until the loose pixels can cover them.
+    const glyphs = [...text.toLowerCase()].filter((ch) => FONT[ch]);
+    const fit = Math.floor((innerWidth * 0.9) / (4 * size));
+    const cost = (word: string[]) => word.reduce((n, ch) => n + FONT[ch].split("#").length - 1, 0);
+    let word = glyphs.slice(0, fit);
+    while (word.length && cost(word) > particles.length) word = word.slice(0, -1);
+    if (!word.length) return;
+
+    // Centre on what's actually visible (the phone keyboard shrinks it).
+    const vv = visualViewport;
+    const cx = (vv?.offsetLeft ?? 0) + (vv?.width ?? innerWidth) / 2;
+    const cy = (vv?.offsetTop ?? 0) + (vv?.height ?? innerHeight) / 2;
+    const left = cx - ((word.length * 4 - 1) * size) / 2;
+    const top = cy - 2.5 * size;
+    const targets: [number, number][] = [];
+    word.forEach((ch, i) =>
+      FONT[ch].split(" ").forEach((row, y) =>
+        [...row].forEach((c, x) => {
+          if (c === "#") targets.push([left + (i * 4 + x + 0.5) * size, top + (y + 0.5) * size]);
+        }),
+      ),
+    );
+
+    // Left-to-right pairing keeps pixels from crossing paths; spare ones stay loose.
+    release();
+    const pool = [...particles].sort((a, b) => a.x - b.x);
+    targets.sort((a, b) => a[0] - b[0]);
+    targets.forEach(([x, y], i) => {
+      const p = pool[Math.floor((i * pool.length) / targets.length)];
+      p.tx = x;
+      p.ty = y;
+    });
+    clearTimeout(holdTimer);
+    holdTimer = window.setTimeout(release, 3000);
+  };
+
+  const queue = (text: string) => {
+    typed = text;
+    clearTimeout(typeTimer);
+    typeTimer = window.setTimeout(() => {
+      spell(typed);
+      typed = "";
+      input.value = "";
+    }, 700);
+  };
+
+  name.addEventListener("pointerdown", (e) => {
+    if (rebuilding || !measure()) return;
+    const reach = Math.max(size * 3, 24); // at least a fingertip wide
+    for (const el of rects) {
+      if (loose.has(el)) continue;
+      const t = el.getBoundingClientRect();
+      if (!t.width) continue; // the variant hidden at this screen size
+      const x = t.x + t.width / 2;
+      const y = t.y + t.height / 2;
+      const dx = x - e.clientX || Math.random() - 0.5;
+      const dy = y - e.clientY || Math.random() - 0.5;
+      const d = Math.hypot(dx, dy);
+      if (d > reach) continue;
+      const speed = size * (0.3 + Math.random() * 0.5);
+      knock(el, x, y, (dx / d) * speed, (dy / d) * speed);
+    }
+    save();
+    start();
+  });
+
+  gravityBtn.addEventListener("click", () => {
+    gravity = !gravity;
+    gravityBtn.textContent = `gravity: ${gravity ? "on" : "off"}`;
+    // iOS only delivers tilt after the user grants it, and only from a tap.
+    const D = (globalThis as { DeviceOrientationEvent?: { requestPermission?: () => Promise<string> } })
+      .DeviceOrientationEvent;
+    if (gravity && D?.requestPermission) D.requestPermission().catch(() => {});
+  });
+
+  typeBtn.addEventListener("click", () => input.focus());
+
+  rebuildBtn.addEventListener("click", () => {
+    clearTimeout(holdTimer);
+    release();
+    input.blur();
+    rebuilding = particles.length > 0;
+  });
+
+  input.addEventListener("input", () => queue(input.value));
+
+  addEventListener("keydown", (e) => {
+    if (e.target === input || !particles.length || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target instanceof HTMLElement && e.target.isContentEditable) return;
+    if (e.key.length === 1 && FONT[e.key.toLowerCase()]) queue(typed + e.key);
+  });
+
+  addEventListener("pointermove", (e) => (pointer = { x: e.clientX, y: e.clientY }), { passive: true });
+  addEventListener("pointerdown", (e) => (pointer = { x: e.clientX, y: e.clientY }), { passive: true });
+  addEventListener("pointerup", (e) => {
+    if (e.pointerType !== "mouse") pointer = null; // a lifted finger stops pushing
+  });
+  addEventListener("pointercancel", () => (pointer = null));
+  document.addEventListener("mouseout", (e) => {
+    if (!e.relatedTarget) pointer = null; // mouse left the window
+  });
+
+  addEventListener("deviceorientation", (e) => {
+    if (e.beta == null || e.gamma == null) return;
+    // Which way is "down" in the screen plane, from the device's Euler angles.
+    const b = (e.beta * Math.PI) / 180;
+    const g = (e.gamma * Math.PI) / 180;
+    const x = Math.cos(b) * Math.sin(g);
+    const y = Math.sin(b);
+    // Rotate into screen space when the page is in landscape.
+    const angle = screen.orientation?.angle ?? (globalThis as { orientation?: number }).orientation ?? 0;
+    const a = (angle * Math.PI) / 180;
+    const next = { x: x * Math.cos(a) + y * Math.sin(a), y: -x * Math.sin(a) + y * Math.cos(a) };
+    // Smooth out sensor jitter so the "liquid" sloshes instead of twitching.
+    tilt = { x: tilt.x + (next.x - tilt.x) * 0.2, y: tilt.y + (next.y - tilt.y) * 0.2 };
+  });
+
+  // Last visit's damage: same holes, and the missing pixels are still floating.
+  try {
+    const saved: number[] = JSON.parse(localStorage.getItem(SAVE_KEY) ?? "[]");
+    if (saved.length && measure()) {
+      for (const el of saved.map((i) => rects[i])) {
+        if (!el?.getBoundingClientRect().width) continue; // saved on a different screen size
+        knock(el, Math.random() * innerWidth, Math.random() * innerHeight, 0, 0);
+      }
+      start();
+    }
+  } catch {}
+</script>
