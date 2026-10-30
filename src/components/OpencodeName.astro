@@ -225,8 +225,10 @@ const variants = [
         for (let j = i + 1; j < free.length; j++) {
           const a = free[i];
           const b = free[j];
-          const dx = b.x - a.x;
-          const dy = b.y - a.y;
+          // A hair of noise so perfectly lined-up rows can buckle into a pile;
+          // without it, a row resting on the floor stays a rigid bar when tilted.
+          const dx = b.x - a.x + (Math.random() - 0.5) * size * 0.02;
+          const dy = b.y - a.y + (Math.random() - 0.5) * size * 0.02;
           const d = Math.hypot(dx, dy);
           if (d >= size || d === 0) continue;
           const push = (size - d) / 2 / d;
@@ -236,13 +238,20 @@ const variants = [
           b.y += dy * push;
         }
       }
+      // Walls bounce back half the speed and drag a little on whatever slides along them.
       for (const p of free) {
         const vx = p.x - p.px;
         const vy = p.y - p.py;
-        if (p.x < r) (p.x = r), (p.px = r + vx * 0.5);
-        if (p.x > w - r) (p.x = w - r), (p.px = w - r + vx * 0.5);
-        if (p.y < r) (p.y = r), (p.py = r + vy * 0.5);
-        if (p.y > h - r) (p.y = h - r), (p.py = h - r + vy * 0.5);
+        if (p.x < r || p.x > w - r) {
+          p.x = Math.min(Math.max(p.x, r), w - r);
+          p.px = p.x + vx * 0.5;
+          p.py = p.y - vy * 0.97;
+        }
+        if (p.y < r || p.y > h - r) {
+          p.y = Math.min(Math.max(p.y, r), h - r);
+          p.py = p.y + vy * 0.5;
+          p.px = p.x - vx * 0.97;
+        }
       }
     }
   };
